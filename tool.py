@@ -71,27 +71,27 @@ class ProductSelect(Select):
         options = [
             discord.SelectOption(
                 label="PREMIUM UID BYPASS",
-                emoji="<a:1420076516750000302:1558921686672220271>",
+                emoji="<a:king:1558662863780974742>",
                 description="PREMIUM UID BYPASS SERVICE"
             ),
             discord.SelectOption(
                 label="UID BYPASS",
-                emoji="<a:1420076516750000302:1558921686672220271>",
+                emoji="<a:axbrr:1558664559416447056>",
                 description="STANDARD UID BYPASS SERVICE"
             ),
             discord.SelectOption(
                 label="AXB PREMIUM PANEL",
-                emoji="<a:1420076516750000302:1558921686672220271>",
+                emoji="<a:kingblue:1558663259098320977>",
                 description="PREMIUM PANEL ACCESS"
             ),
             discord.SelectOption(
                 label="LIB BYPASS",
-                emoji="<a:1420076516750000302:1558921686672220271>",
+                emoji="<a:DONT:1558929946922065990>",
                 description="LIB BYPASS ALL SERVER SAFE"
             ),
             discord.SelectOption(
                 label="BR MOD",
-                emoji="<a:1420076516750000302:1558921686672220271>",
+                emoji="<:BRMODE:1559020401064026224>",
                 description="BR MOD PANEL"
             )
         ]
