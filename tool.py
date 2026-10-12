@@ -9,7 +9,7 @@ from discord.ui import View, Select
 load_dotenv()
 
 TOKEN = os.getenv("DISCORD_TOKEN")
-TICKET_CHANNEL_ID = int(os.getenv("TICKET_CHANNEL_ID"))
+TICKET_CHANNEL_ID = int(os.getenv("TICKET_CHANNEL_ID", "0"))
 
 CATEGORY_NAME = "🎫 AXB SUPPORT"
 
@@ -41,7 +41,6 @@ class ClosePanel(View):
         interaction: discord.Interaction,
         button: discord.ui.Button
     ):
-
         if not interaction.user.guild_permissions.manage_channels:
             await interaction.response.send_message(
                 "❌ Only Admins Can Close Tickets.",
@@ -58,8 +57,8 @@ class ClosePanel(View):
 
         try:
             await interaction.channel.delete()
-        except:
-            pass
+        except Exception as e:
+            print(f"Error deleting channel: {e}")
 
 
 # =========================
@@ -67,31 +66,30 @@ class ClosePanel(View):
 # =========================
 class ProductSelect(Select):
     def __init__(self):
-
         options = [
             discord.SelectOption(
                 label="PREMIUM UID BYPASS",
-                emoji="<a:welcome:1330517345508261900>",
+                emoji="💎",
                 description="PREMIUM UID BYPASS SERVICE"
             ),
             discord.SelectOption(
                 label="UID BYPASS",
-                emoji="<a:welcome:1533400305775939636>",
+                emoji="⚡",
                 description="STANDARD UID BYPASS SERVICE"
             ),
             discord.SelectOption(
                 label="AXB PREMIUM PANEL",
-                emoji="<a:welcome:1330517345508261900>",
+                emoji="🔥",
                 description="PREMIUM PANEL ACCESS"
             ),
             discord.SelectOption(
                 label="LIB BYPASS",
-                emoji="<a:welcome:1330517345508261900>",
+                emoji="🛡️",
                 description="LIB BYPASS ALL SERVER SAFE"
             ),
             discord.SelectOption(
                 label="BR MOD",
-                emoji="<a:welcome:1330517345508261900>",
+                emoji="🎮",
                 description="BR MOD PANEL"
             )
         ]
@@ -105,6 +103,8 @@ class ProductSelect(Select):
         )
 
     async def callback(self, interaction: discord.Interaction):
+        # Defer first to avoid "Interaction failed"
+        await interaction.response.defer(ephemeral=True)
 
         guild = interaction.guild
         user = interaction.user
@@ -117,7 +117,7 @@ class ProductSelect(Select):
         )
 
         if existing_ticket:
-            await interaction.response.send_message(
+            await interaction.followup.send(
                 f"❌ You Already Have A Ticket:\n{existing_ticket.mention}",
                 ephemeral=True
             )
@@ -129,33 +129,38 @@ class ProductSelect(Select):
         )
 
         if category is None:
-            category = await guild.create_category(
-                CATEGORY_NAME
-            )
+            category = await guild.create_category(CATEGORY_NAME)
 
         overwrites = {
             guild.default_role: discord.PermissionOverwrite(
                 view_channel=False
             ),
-
             user: discord.PermissionOverwrite(
                 view_channel=True,
                 send_messages=True,
-                read_message_history=True
+                read_message_history=True,
+                attach_files=True
             ),
-
             guild.me: discord.PermissionOverwrite(
                 view_channel=True,
                 send_messages=True,
-                read_message_history=True
+                read_message_history=True,
+                manage_channels=True
             )
         }
 
-        ticket_channel = await guild.create_text_channel(
-            name=ticket_name,
-            category=category,
-            overwrites=overwrites
-        )
+        try:
+            ticket_channel = await guild.create_text_channel(
+                name=ticket_name,
+                category=category,
+                overwrites=overwrites
+            )
+        except Exception as e:
+            await interaction.followup.send(
+                f"❌ Failed to create ticket: {e}",
+                ephemeral=True
+            )
+            return
 
         embed = discord.Embed(
             title="💎 AXB STORE ORDER",
@@ -169,9 +174,7 @@ class ProductSelect(Select):
             color=0x8B5CF6
         )
 
-        embed.set_footer(
-            text="AXB STORE • Premium Support"
-        )
+        embed.set_footer(text="AXB STORE • Premium Support")
 
         await ticket_channel.send(
             content=user.mention,
@@ -179,7 +182,7 @@ class ProductSelect(Select):
             view=ClosePanel()
         )
 
-        await interaction.response.send_message(
+        await interaction.followup.send(
             f"✅ Ticket Created Successfully:\n{ticket_channel.mention}",
             ephemeral=True
         )
@@ -201,34 +204,38 @@ class ProductView(View):
 async def on_ready():
     print(f"✅ Logged in as {bot.user}")
 
+    # Persistent views
     bot.add_view(ProductView())
     bot.add_view(ClosePanel())
 
+    try:
+        synced = await bot.tree.sync()
+        print(f"✅ Synced {len(synced)} slash commands")
+    except Exception as e:
+        print(f"Slash sync error: {e}")
+
 
 # =========================
-# PANEL COMMAND
+# PANEL COMMAND (Prefix)
 # =========================
 @bot.command()
 async def panel(ctx):
-
-    if ctx.channel.id != TICKET_CHANNEL_ID:
-        await ctx.send(
-            "❌ This Command Only Works In Buy Now Channel."
-        )
+    if TICKET_CHANNEL_ID and ctx.channel.id != TICKET_CHANNEL_ID:
+        await ctx.send("❌ This Command Only Works In Buy Now Channel.")
         return
 
     embed = discord.Embed(
-        title="<a:welcome:1533417041615392879>  **AXB STORE**   <a:welcome:1533417041615392879> ",
+        title="✨ **AXB STORE** ✨",
         description=(
             "━━━━━━━━━━━━━━━━━━━━━━\n"
-            "<a:welcome:1546092136787611658> PURCHASE CENTER\n"
+            "🎫 PURCHASE CENTER\n"
             "━━━━━━━━━━━━━━━━━━━━━━\n\n"
             "Select Your Product From The Menu Below.\n\n"
-            "<a:welcome:1533400305775939636> PREMIUM UID BYPASS\n"
-            "<a:welcome:1533400305775939636> UID BYPASS\n"
-            "<a:welcome:1533400305775939636> PREMIUM PANEL\n"
-            "<a:welcome:1533400305775939636> LIB BYPASS\n"
-            "<a:welcome:1533400305775939636> BR MOD\n\n"
+            "💎 PREMIUM UID BYPASS\n"
+            "⚡ UID BYPASS\n"
+            "🔥 PREMIUM PANEL\n"
+            "🛡️ LIB BYPASS\n"
+            "🎮 BR MOD\n\n"
             "After Selecting A Product,\n"
             "A Private Ticket Will Be Created Automatically."
         ),
@@ -236,22 +243,49 @@ async def panel(ctx):
     )
 
     if ctx.guild.icon:
-        embed.set_thumbnail(
-            url=ctx.guild.icon.url
+        embed.set_thumbnail(url=ctx.guild.icon.url)
+
+    embed.set_footer(text="AXB STORE • Premium Services")
+
+    await ctx.send(embed=embed, view=ProductView())
+
+
+# =========================
+# PANEL SLASH COMMAND
+# =========================
+@bot.tree.command(name="panel", description="Send AXB Store Panel")
+async def panel_slash(interaction: discord.Interaction):
+    if TICKET_CHANNEL_ID and interaction.channel.id != TICKET_CHANNEL_ID:
+        await interaction.response.send_message(
+            "❌ This Command Only Works In Buy Now Channel.",
+            ephemeral=True
         )
+        return
 
-    embed.set_image(
-        url="https://imagetourl.cloud/96osb79g.gif"
+    embed = discord.Embed(
+        title="✨ **AXB STORE** ✨",
+        description=(
+            "━━━━━━━━━━━━━━━━━━━━━━\n"
+            "🎫 PURCHASE CENTER\n"
+            "━━━━━━━━━━━━━━━━━━━━━━\n\n"
+            "Select Your Product From The Menu Below.\n\n"
+            "💎 PREMIUM UID BYPASS\n"
+            "⚡ UID BYPASS\n"
+            "🔥 PREMIUM PANEL\n"
+            "🛡️ LIB BYPASS\n"
+            "🎮 BR MOD\n\n"
+            "After Selecting A Product,\n"
+            "A Private Ticket Will Be Created Automatically."
+        ),
+        color=0x8B5CF6
     )
 
-    embed.set_footer(
-        text="AXB STORE • Premium Services"
-    )
+    if interaction.guild.icon:
+        embed.set_thumbnail(url=interaction.guild.icon.url)
 
-    await ctx.send(
-        embed=embed,
-        view=ProductView()
-    )
+    embed.set_footer(text="AXB STORE • Premium Services")
+
+    await interaction.response.send_message(embed=embed, view=ProductView())
 
 
 bot.run(TOKEN)
