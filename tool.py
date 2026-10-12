@@ -9,7 +9,7 @@ from discord.ui import View, Select
 load_dotenv()
 
 TOKEN = os.getenv("DISCORD_TOKEN")
-TICKET_CHANNEL_ID = int(os.getenv("TICKET_CHANNEL_ID"))
+TICKET_CHANNEL_ID = int(os.getenv("TICKET_CHANNEL_ID", "0"))
 
 CATEGORY_NAME = "🎫 AXB SUPPORT"
 
@@ -71,27 +71,27 @@ class ProductSelect(Select):
         options = [
             discord.SelectOption(
                 label="PREMIUM UID BYPASS",
-                emoji="<a:welcome:1330517345508261900>",
+                emoji="💎",
                 description="PREMIUM UID BYPASS SERVICE"
             ),
             discord.SelectOption(
                 label="UID BYPASS",
-                emoji="<a:welcome:1533400305775939636>",
+                emoji="⚡",
                 description="STANDARD UID BYPASS SERVICE"
             ),
             discord.SelectOption(
                 label="AXB PREMIUM PANEL",
-                emoji="<a:welcome:1330517345508261900>",
+                emoji="🔥",
                 description="PREMIUM PANEL ACCESS"
             ),
             discord.SelectOption(
                 label="LIB BYPASS",
-                emoji="<a:welcome:1330517345508261900>",
+                emoji="🛡️",
                 description="LIB BYPASS ALL SERVER SAFE"
             ),
             discord.SelectOption(
                 label="BR MOD",
-                emoji="<a:welcome:1330517345508261900>",
+                emoji="🎮",
                 description="BR MOD PANEL"
             )
         ]
@@ -106,6 +106,9 @@ class ProductSelect(Select):
 
     async def callback(self, interaction: discord.Interaction):
 
+        # ✅ FIX: defer pehle, taake interaction timeout na ho
+        await interaction.response.defer(ephemeral=True)
+
         guild = interaction.guild
         user = interaction.user
         product = self.values[0]
@@ -117,7 +120,7 @@ class ProductSelect(Select):
         )
 
         if existing_ticket:
-            await interaction.response.send_message(
+            await interaction.followup.send(
                 f"❌ You Already Have A Ticket:\n{existing_ticket.mention}",
                 ephemeral=True
             )
@@ -179,7 +182,7 @@ class ProductSelect(Select):
             view=ClosePanel()
         )
 
-        await interaction.response.send_message(
+        await interaction.followup.send(
             f"✅ Ticket Created Successfully:\n{ticket_channel.mention}",
             ephemeral=True
         )
@@ -211,24 +214,24 @@ async def on_ready():
 @bot.command()
 async def panel(ctx):
 
-    if ctx.channel.id != TICKET_CHANNEL_ID:
+    if TICKET_CHANNEL_ID and ctx.channel.id != TICKET_CHANNEL_ID:
         await ctx.send(
             "❌ This Command Only Works In Buy Now Channel."
         )
         return
 
     embed = discord.Embed(
-        title="<a:welcome:1533417041615392879>  **AXB STORE**   <a:welcome:1533417041615392879> ",
+        title="✨ **AXB STORE** ✨",
         description=(
             "━━━━━━━━━━━━━━━━━━━━━━\n"
-            "<a:welcome:1546092136787611658> PURCHASE CENTER\n"
+            "🎫 PURCHASE CENTER\n"
             "━━━━━━━━━━━━━━━━━━━━━━\n\n"
             "Select Your Product From The Menu Below.\n\n"
-            "<a:welcome:1533400305775939636> PREMIUM UID BYPASS\n"
-            "<a:welcome:1533400305775939636> UID BYPASS\n"
-            "<a:welcome:1533400305775939636> PREMIUM PANEL\n"
-            "<a:welcome:1533400305775939636> LIB BYPASS\n"
-            "<a:welcome:1533400305775939636> BR MOD\n\n"
+            "💎 PREMIUM UID BYPASS\n"
+            "⚡ UID BYPASS\n"
+            "🔥 PREMIUM PANEL\n"
+            "🛡️ LIB BYPASS\n"
+            "🎮 BR MOD\n\n"
             "After Selecting A Product,\n"
             "A Private Ticket Will Be Created Automatically."
         ),
