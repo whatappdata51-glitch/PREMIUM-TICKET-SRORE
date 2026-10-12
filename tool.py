@@ -161,13 +161,13 @@ class ProductSelect(Select):
         )
 
         embed = discord.Embed(
-            title="💎 AXB STORE ORDER",
+            title="<a:premium:1558663973006483478> AXB STORE ORDER <a:premium:1558663973006483478>",
             description=(
-                f"👤 Customer: {user.mention}\n\n"
-                f"🛒 Product Selected:\n"
+                f"<:ghjd:1558677906744549436> Customer: {user.mention}\n\n"
+                f"<:purchase:1353357382285267004> Product Selected:\n"
                 f"**{product}**\n\n"
                 f"📩 Please Send Your Message Below.\n"
-                f"⚡ Support Team Will Reply Soon."
+                f"<a:axbrr:1558664559416447056> Support Team Will Reply Soon."
             ),
             color=0x8B5CF6
         )
@@ -183,7 +183,7 @@ class ProductSelect(Select):
         )
 
         await interaction.followup.send(
-            f"✅ Ticket Created Successfully:\n{ticket_channel.mention}",
+            f"<a:6093animatedchec:1558663572282806362> Ticket Created Successfully:\n{ticket_channel.mention}",
             ephemeral=True
         )
 
@@ -221,17 +221,17 @@ async def panel(ctx):
         return
 
     embed = discord.Embed(
-        title="✨ **AXB STORE** ✨",
+        title="<a:premium:1558663973006483478> **AXB STORE** <a:premium:1558663973006483478>",
         description=(
             "━━━━━━━━━━━━━━━━━━━━━━\n"
             "🎫 PURCHASE CENTER\n"
             "━━━━━━━━━━━━━━━━━━━━━━\n\n"
             "Select Your Product From The Menu Below.\n\n"
-            "💎 PREMIUM UID BYPASS\n"
-            "⚡ UID BYPASS\n"
-            "🔥 PREMIUM PANEL\n"
-            "🛡️ LIB BYPASS\n"
-            "🎮 BR MOD\n\n"
+            "<a:king:1558662863780974742> PREMIUM UID BYPASS\n"
+            "<a:axbrr:1558664559416447056> UID BYPASS\n"
+            "<a:kingblue:1558663259098320977> PREMIUM PANEL\n"
+            "<a:DONT:1558929946922065990> LIB BYPASS\n"
+            "<:BRMODE:1559020401064026224> BR MOD\n\n"
             "After Selecting A Product,\n"
             "A Private Ticket Will Be Created Automatically."
         ),
