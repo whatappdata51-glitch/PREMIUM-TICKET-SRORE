@@ -11,7 +11,7 @@ load_dotenv()
 TOKEN = os.getenv("DISCORD_TOKEN")
 TICKET_CHANNEL_ID = int(os.getenv("TICKET_CHANNEL_ID", "0"))
 
-CATEGORY_NAME = "🎫 AXB SUPPORT"
+CATEGORY_NAME = "🎫 AXB PREMIUM SUPPORT"
 
 intents = discord.Intents.default()
 intents.message_content = True
@@ -164,9 +164,8 @@ class ProductSelect(Select):
             title="<a:premium:1558663973006483478> AXB STORE ORDER <a:premium:1558663973006483478>",
             description=(
                 f"<:ghjd:1558677906744549436> Customer: {user.mention}\n\n"
-                f"<:purchase:1353357382285267004> Product Selected:\n"
+                f"<a:axbrr:1558664559416447056> Product Selected:\n"
                 f"**{product}**\n\n"
-                f"📩 Please Send Your Message Below.\n"
                 f"<a:axbrr:1558664559416447056> Support Team Will Reply Soon."
             ),
             color=0x8B5CF6
