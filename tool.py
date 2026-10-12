@@ -220,7 +220,7 @@ async def panel(ctx):
         return
 
     embed = discord.Embed(
-        title="<a:premium:1558663973006483478> **AXB STORE** <a:premium:1558663973006483478>",
+        title="**<a:premium:1558663973006483478> AXB PREMIUM  STORE <a:premium:1558663973006483478>**",
         description=(
             "━━━━━━━━━━━━━━━━━━━━━━\n"
             "🎫 PURCHASE CENTER\n"
