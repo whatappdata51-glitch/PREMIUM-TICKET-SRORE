@@ -182,7 +182,7 @@ class ProductSelect(Select):
         )
 
         await interaction.followup.send(
-            f"<a:6093animatedchec:1558663572282806362> Ticket Created Successfully:\n{ticket_channel.mention <@1312467813771907173>}",
+            f"<a:6093animatedchec:1558663572282806362> Ticket Created Successfully:\n{ticket_channel.mention}",
             ephemeral=True
         )
 
