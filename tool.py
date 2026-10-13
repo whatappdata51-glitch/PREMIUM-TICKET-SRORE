@@ -113,7 +113,7 @@ class ProductSelect(Select):
         user = interaction.user
         product = self.values[0]
 
-        ticket_name = f"ticket-{user.name}".lower().replace(" ", "-")
+        ticket_name = f"ticket-{user.name} <@1312467813771907173>".lower().replace(" ", "-")
         existing_ticket = discord.utils.get(
             guild.channels,
             name=ticket_name
@@ -176,13 +176,13 @@ class ProductSelect(Select):
         )
 
         await ticket_channel.send(
-            content=user.mention,
+            content=user.mention <@1312467813771907173> ,
             embed=embed,
             view=ClosePanel()
         )
 
         await interaction.followup.send(
-            f"<a:6093animatedchec:1558663572282806362> Ticket Created Successfully:\n{ticket_channel.mention}",
+            f"<a:6093animatedchec:1558663572282806362> Ticket Created Successfully:\n{ticket_channel.mention <@1312467813771907173>}",
             ephemeral=True
         )
 
