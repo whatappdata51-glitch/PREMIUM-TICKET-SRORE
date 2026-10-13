@@ -42,7 +42,7 @@ class ClosePanel(View):
         button: discord.ui.Button
     ):
 
-        if not interaction.user.guild_permissions.manage_channels:
+        if not interaction..guild_permissions.manage_channels:
             await interaction.response.send_message(
                 "❌ Only Admins Can Close Tickets.",
                 ephemeral=True
@@ -176,7 +176,7 @@ class ProductSelect(Select):
         )
 
         await ticket_channel.send(
-            content=user.mention <@1312467813771907173> ,
+            content=user.mention ,
             embed=embed,
             view=ClosePanel()
         )
