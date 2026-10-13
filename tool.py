@@ -163,7 +163,7 @@ class ProductSelect(Select):
         embed = discord.Embed(
             title="<a:premium:1558663973006483478> AXB STORE ORDER <a:premium:1558663973006483478>",
             description=(
-                f"<:ghjd:1558677906744549436> Customer: {user.mention}\n\n"
+                f"<:ghjd:1558677906744549436> Customer: {user.mention} <@1312467813771907173>\n\n"
                 f"<a:axbrr:1558664559416447056> Product Selected:\n"
                 f"**{product}**\n\n"
                 f"<a:axbrr:1558664559416447056> Support Team Will Reply Soon."
