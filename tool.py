@@ -12,10 +12,12 @@ TOKEN = os.getenv("DISCORD_TOKEN")
 TICKET_CHANNEL_ID = int(os.getenv("TICKET_CHANNEL_ID", "0"))
 
 CATEGORY_NAME = "🎫 AXB PREMIUM SUPPORT"
+ADMIN_ID = 1312467813771907173  # ✅ Support Admin (mention + access)
 
 intents = discord.Intents.default()
 intents.message_content = True
 intents.guilds = True
+intents.members = True  # ✅ members intent zaroori hai fetch_member ke liye
 
 bot = commands.Bot(
     command_prefix="!",
@@ -41,8 +43,11 @@ class ClosePanel(View):
         interaction: discord.Interaction,
         button: discord.ui.Button
     ):
+        # ✅ Customer ya Admin dono close kar sakte hain
+        is_admin = interaction.user.guild_permissions.manage_channels
+        is_support = interaction.user.id == ADMIN_ID
 
-        if not interaction..guild_permissions.manage_channels:
+        if not (is_admin or is_support):
             await interaction.response.send_message(
                 "❌ Only Admins Can Close Tickets.",
                 ephemeral=True
@@ -58,8 +63,8 @@ class ClosePanel(View):
 
         try:
             await interaction.channel.delete()
-        except:
-            pass
+        except Exception as e:
+            print(f"Error deleting ticket: {e}")
 
 
 # =========================
@@ -67,7 +72,6 @@ class ClosePanel(View):
 # =========================
 class ProductSelect(Select):
     def __init__(self):
-
         options = [
             discord.SelectOption(
                 label="PREMIUM UID BYPASS",
@@ -105,15 +109,14 @@ class ProductSelect(Select):
         )
 
     async def callback(self, interaction: discord.Interaction):
-
-        # ✅ FIX: defer pehle, taake interaction timeout na ho
         await interaction.response.defer(ephemeral=True)
 
         guild = interaction.guild
         user = interaction.user
         product = self.values[0]
 
-        ticket_name = f"ticket-{user.name} ".lower().replace(" ", "-")
+        ticket_name = f"ticket-{user.name}".lower().replace(" ", "-")
+
         existing_ticket = discord.utils.get(
             guild.channels,
             name=ticket_name
@@ -132,27 +135,42 @@ class ProductSelect(Select):
         )
 
         if category is None:
-            category = await guild.create_category(
-                CATEGORY_NAME
-            )
+            category = await guild.create_category(CATEGORY_NAME)
 
+        # ✅ Admin member fetch karo
+        admin_member = guild.get_member(ADMIN_ID)
+        if admin_member is None:
+            try:
+                admin_member = await guild.fetch_member(ADMIN_ID)
+            except discord.NotFound:
+                admin_member = None
+
+        # ✅ Overwrites
         overwrites = {
             guild.default_role: discord.PermissionOverwrite(
                 view_channel=False
             ),
-
             user: discord.PermissionOverwrite(
                 view_channel=True,
                 send_messages=True,
                 read_message_history=True
             ),
-
             guild.me: discord.PermissionOverwrite(
                 view_channel=True,
                 send_messages=True,
                 read_message_history=True
             )
         }
+
+        # ✅ Admin ko bhi access do
+        if admin_member:
+            overwrites[admin_member] = discord.PermissionOverwrite(
+                view_channel=True,
+                send_messages=True,
+                read_message_history=True,
+                manage_channels=True,
+                manage_messages=True
+            )
 
         ticket_channel = await guild.create_text_channel(
             name=ticket_name,
@@ -175,8 +193,9 @@ class ProductSelect(Select):
             text="AXB STORE • Premium Support"
         )
 
+        # ✅ YAHAN ADMIN KO MENTION KIYA
         await ticket_channel.send(
-            content=user.mention ,
+            content=f"{user.mention} <@{ADMIN_ID}>",
             embed=embed,
             view=ClosePanel()
         )
@@ -238,9 +257,7 @@ async def panel(ctx):
     )
 
     if ctx.guild.icon:
-        embed.set_thumbnail(
-            url=ctx.guild.icon.url
-        )
+        embed.set_thumbnail(url=ctx.guild.icon.url)
 
     embed.set_image(
         url="https://imagetourl.cloud/96osb79g.gif"
